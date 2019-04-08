@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+	xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity3">
+<head>
+<meta charset="utf-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+
+<link rel="stylesheet" type="text/css"
+	th:href="@{/webjars/bootstrap/3.3.7/css/bootstrap.min.css}" />
+
+        <title>User Home</title>
+</head>
+<body>
+	<nav class="navbar navbar-inverse navbar-fixed-top">
+		<div class="container">
+			<div class="navbar-header">
+				<button type="button" class="navbar-toggle collapsed"
+					data-toggle="collapse" data-target="#navbar" aria-expanded="false"
+					aria-controls="navbar">
+					<span class="sr-only">Toggle navigation</span> <span
+						class="icon-bar"></span> <span class="icon-bar"></span> <span
+						class="icon-bar"></span>
+				</button>
+				    	<div layout:fragment="content">
+				    	<p style="color:white">Welcome (<span sec:authentication="principal.username"></span>)</p>
+	        <p sec:authorize="isAuthenticated()"><a th:href="@{/logout}">Logout</a></p>
+    	</div>
+			</div>
+		</div>
+		
+	</nav>
+    <body>
+    <br>
+    <br>
+    <br>
+    <br>
+    <br>
+    <form action="#" th:action="@{/update}" th:object="${user}" method="post">
+    <label for="email">Id</label>
+    <input type="text" th:field="*{id}" id="id" placeholder="Id">
+    <label for="email">First name</label>
+    <input type="text" th:field="*{firstName}" id="firstName" placeholder="First name">
+    <label for="email">Last name</label>
+    <input type="text" th:field="*{lastName}" id="lastName" placeholder="Last name">
+    <label for="email">Email</label>
+    <input type="text" th:field="*{email}" id="email" placeholder="Email">
+    <span th:if="${#fields.hasErrors('email')}" th:errors="*{email}"></span>
+    <label for="email">Password</label>
+    <input type="text" th:field="*{password}" id="password" placeholder="Password" readonly="readonly">
+<!--     <label for="email">Role</label> -->
+<!--     <input type="text" th:field="*{roles}" th:value="${roles}" id="roles" placeholder="Role" readonly="readonly"> -->
+<!--     <ul> -->
+<!--     <li th:each="role : ${roles1}"> -->
+<!--                 <div> -->
+<!--                     <input type="text" th:field="*{roles}" th:value="${role.name}"> -->
+<!--                     <label th:text="${role.name}"></label> -->
+<!--                 </div> -->
+<!--             </li> -->
+<!--             </ul> -->
+    
+    <input type="submit" value="Update User">   
+</form>
+    </body>
+    
+</html>
+	<script type="text/javascript"
+		th:src="@{/webjars/jquery/3.2.1/jquery.min.js/}"></script>
+	<script type="text/javascript"
+		th:src="@{/webjars/bootstrap/3.3.7/js/bootstrap.min.js}"></script>
+
+</body>
+</html>
