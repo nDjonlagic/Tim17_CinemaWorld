@@ -4,15 +4,14 @@ import java.util.List;
 
 import javax.validation.Valid;
 
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -61,25 +60,18 @@ public class MainController {
      * Get delete users form and delete specified user
      */
     @RequestMapping(value = "/admin/delete/users", method = RequestMethod.GET)
-    public String deleteUser(@RequestParam (name="userEmail") String email, Model model) {
+    public String deleteUserAdmin(@RequestParam (name="userEmail") String email, Model model) {
         userService.deleteByEmail(email);
         return "redirect:/admin/users";
     }
+    @ResponseBody
+    @RequestMapping(value = "/delete/users", method = RequestMethod.GET)
+    public User deleteUser(@RequestParam (name="userEmail") String email, Model model) {
+    	User user = userService.findByEmail(email);
+        userService.deleteByEmail(email);
+        return user;
+    }
     
-//    @GetMapping("/edit/{id}")
-//    public String showUpdateForm(@PathVariable("id") long id, Model model) {
-//        User user = userRepository.findById(id);
-////          .orElseThrow(() -> new IllegalArgumentException("Invalid user Id:" + id));
-////         User testni = (User)SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-////         System.out.println(testni.getId());
-//        Authentication loggedInUser = SecurityContextHolder.getContext().getAuthentication();
-//        String username = loggedInUser.getName();
-//      System.out.println(username);
-//
-//        model.addAttribute("user", user);
-////        model.addAttribute("roles1", user.getRoles());
-//        return "updateUser";
-//    }
     /*
      * Get edit user information page
      */
@@ -99,37 +91,37 @@ public class MainController {
     /*
      * Post for update user info
      */
-    @PostMapping("/update")
-    public String updateUser(@Valid User user, 
-      BindingResult result, Model model) {
-        if (result.hasErrors()) {
-//            user.setId(id);
-            return "updateUser";
-        }
-        Authentication loggedInUser = SecurityContextHolder.getContext().getAuthentication();
-        String username = loggedInUser.getName();
-        User existing = userService.findByEmail(username);
-        user.setRoles(existing.getRoles());
-        userRepository.save(user);
-//        model.addAttribute("users", userRepository.findAll());
-        SecurityContextHolder.clearContext();
-        return "redirect:/index";
-    }
-    
-//    @PostMapping("/update/{id}")
-//    public String updateUser(@PathVariable("id") long id, @Valid User user, 
+//    @PostMapping("/update")
+//    public String updateUser(@Valid User user, 
 //      BindingResult result, Model model) {
 //        if (result.hasErrors()) {
-//            user.setId(id);
+////            user.setId(id);
 //            return "updateUser";
 //        }
-//        User existing = userRepository.findById(id);
+//        Authentication loggedInUser = SecurityContextHolder.getContext().getAuthentication();
+//        String username = loggedInUser.getName();
+//        User existing = userService.findByEmail(username);
 //        user.setRoles(existing.getRoles());
 //        userRepository.save(user);
 ////        model.addAttribute("users", userRepository.findAll());
-//        return "userhome";
+//        SecurityContextHolder.clearContext();
+//        return "redirect:/index";
 //    }
+    @ResponseBody
+    @PostMapping("/update")
+    public ResponseEntity<User> updateUser(@RequestParam (name="id") Long id,@RequestBody @Valid User user) {
+        User existing = userService.findById(id);
+        existing.setFirstName(user.getFirstName());
+        existing.setLastName(user.getLastName());
+        existing.setEmail(user.getEmail());
+        existing.setPassword(user.getPassword());
+        existing.setRoles(user.getRoles());
+
+        final User updatedUser = userRepository.save(existing);
+        return ResponseEntity.ok(updatedUser);
+    }
     
+   
     /*
      * Get all users page for admin
      */
@@ -139,12 +131,12 @@ public class MainController {
         return "adminUsers";
     }
     
-//    @ResponseBody
-//    @GetMapping("/users")
-//    public List<User> adminUsers() {
-//        List<User> users = userService.findAll();
-//        return users;
-//    }
+    @ResponseBody
+    @GetMapping("/users")
+    public List<User> adminUsers() {
+        List<User> users = userService.findAll();
+        return users;
+    }
     
     /*
      * Get user home page

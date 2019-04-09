@@ -13,6 +13,8 @@ import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
+import javax.validation.constraints.Email;
+import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.Pattern;
 
 @Entity
@@ -23,9 +25,18 @@ public class User {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
+    @NotEmpty
     private String firstName;
+    
+    @NotEmpty
     private String lastName;
+    
+    @NotEmpty
+    @Email
     private String email;
+    
+    @NotEmpty
+    @Pattern(regexp="^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[!?@#$%^&+=])(?=\\S+$).{8,}$",message="Password must satisfy:\nAt least 8 chars\nContains at least one digit\nContains at least one lower alpha char and one upper alpha char\nContains at least one char within a set of special chars (@#%$^ etc.)\nDoes not contain space, tab, etc.")
     private String password;
 
     @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)

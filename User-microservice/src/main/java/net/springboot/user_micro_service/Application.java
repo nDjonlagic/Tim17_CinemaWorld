@@ -25,7 +25,7 @@ public class Application {
     public CommandLineRunner demoData(UserRepository repo) {
         return args -> { 
         	BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
-//            repo.save(new User("Ned","Ned2","ndjonlagic1@gmail.com",passwordEncoder.encode("admin"),Arrays.asList(new Role("ROLE_ADMIN"))));
+            repo.save(new User("Ned","Ned2","ndjonlagic1@gmail.com",passwordEncoder.encode("admin"),Arrays.asList(new Role("ROLE_ADMIN"))));
         };
     }
 }

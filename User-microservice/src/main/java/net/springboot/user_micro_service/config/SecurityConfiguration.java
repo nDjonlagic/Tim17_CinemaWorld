@@ -29,6 +29,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http
+        		.csrf().disable()
                 .authorizeRequests()
                     .antMatchers(
                             "/registration**",
@@ -39,7 +40,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
                             "/").permitAll()
                     .antMatchers("/userhome").hasRole("USER")
     				.antMatchers("/admin/**").hasRole("ADMIN")
-    				.antMatchers("/edit","/update").authenticated()
+//    				.antMatchers("/edit","/update").authenticated()
     				.and().formLogin().successHandler(successHandler)
     				.loginPage("/login").and().logout().permitAll()
                 .and()
